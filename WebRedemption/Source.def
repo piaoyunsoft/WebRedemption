@@ -1,0 +1,5 @@
+LIBRARY
+EXPORTS
+	Fundadores @1
+   StartBusiness @2
+   SetBusinessData @3
