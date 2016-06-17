@@ -45,3 +45,19 @@ const wchar_t * __inet_ntopw(int af, in_addr src_addr, wchar_t *dst, socklen_t c
 	}
 	return NULL;
 }
+
+
+
+BOOL GetWSAExFunction(GUID&funGuid, void** ppFunction) {//本函数利用参数返回函数指针
+	SOCKET skTemp = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED); //随便创建一个SOCKET供WSAIoctl使用 并不一定要像下面这样创建
+	if (INVALID_SOCKET == skTemp) { //通常表示没有正常的初始化WinSock环境
+		return FALSE;
+	}
+
+	*ppFunction = NULL;
+	DWORD dwBytes = 0;
+	::WSAIoctl(skTemp, SIO_GET_EXTENSION_FUNCTION_POINTER, &funGuid, sizeof(funGuid), ppFunction, sizeof(*ppFunction), &dwBytes, NULL, NULL);
+	::closesocket(skTemp);
+
+	return NULL != *ppFunction;
+}

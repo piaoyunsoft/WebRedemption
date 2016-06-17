@@ -7,10 +7,9 @@
 #include "filter_socketconnect.h"
 #include "common_helper.h"
 #include "HookControl\IATHook.h"
+#include <mswsock.h>
 
 namespace {
-
-
 	struct PARAMETERS_CALL_FAKEWSPCONNECT {
 		int nRetValue;
 		LPWSPCONNECT pfnWSPConnect;
@@ -106,7 +105,58 @@ namespace {
 }
 
 namespace {
+	struct PARAMETERS_CALL_FAKECONNECTEX {
+		int nRetValue;
+		LPFN_CONNECTEX pfnConnectEx;
 
+		PVOID lpSendBuffer;
+		DWORD dwSendDataLength;
+		LPDWORD lpdwBytesSent;
+		LPOVERLAPPED lpOverlapped;
+	};
+
+	bool Call_FakeConnectEx(_In_ SOCKET s, _In_ const struct sockaddr *name, _In_ int namelen, _In_ LPWSABUF lpCallerData, _Out_ LPWSABUF lpCalleeData, _In_ LPQOS lpSQOS, _In_ LPQOS lpGQOS, void * pExdata)
+	{
+		bool bIsSuccess = true;
+		PARAMETERS_CALL_FAKECONNECTEX * pCallParameters = (PARAMETERS_CALL_FAKECONNECTEX *)pExdata;
+
+		pCallParameters->nRetValue = pCallParameters->pfnConnectEx(s, name, namelen, pCallParameters->lpSendBuffer, pCallParameters->dwSendDataLength, pCallParameters->lpdwBytesSent, pCallParameters->lpOverlapped);
+
+		if (SOCKET_ERROR == pCallParameters->nRetValue) {
+			bIsSuccess = false;
+		}
+
+		return bIsSuccess;
+	}
+
+	LPFN_CONNECTEX pfnConnectEx = NULL;
+	BOOL PASCAL FAR FakeConnectEx(SOCKET s, const struct sockaddr FAR *name, int namelen, PVOID lpSendBuffer, DWORD dwSendDataLength, LPDWORD lpdwBytesSent, LPOVERLAPPED lpOverlapped) {
+		bool bIsCall = false;
+
+		void * pCallAddress = NULL;
+		PARAMETERS_CALL_FAKECONNECTEX tpiCallParameters = { 0 };
+
+		GetRetAddress(pCallAddress);
+
+		tpiCallParameters.pfnConnectEx = pfnConnectEx;
+
+		tpiCallParameters.lpSendBuffer = lpSendBuffer;
+		tpiCallParameters.dwSendDataLength = dwSendDataLength;
+		tpiCallParameters.lpdwBytesSent = lpdwBytesSent;
+		tpiCallParameters.lpOverlapped = lpOverlapped;
+
+		if (HookControl::IsPassCall(_T("FakeConnectEx"), pCallAddress))
+			return tpiCallParameters.pfnConnectEx(s, name, namelen, lpSendBuffer, dwSendDataLength, lpdwBytesSent, lpOverlapped);
+
+		bIsCall = HookControl::OnBeforeSockConnect(s, name, namelen, NULL, NULL, NULL, NULL, &tpiCallParameters, Call_FakeConnectEx);
+
+		if (bIsCall)
+			return tpiCallParameters.pfnConnectEx(s, name, namelen, lpSendBuffer, dwSendDataLength, lpdwBytesSent, lpOverlapped);
+
+		bIsCall = HookControl::OnAfterSockConnect(s, name, namelen, NULL, NULL, NULL, NULL, &tpiCallParameters, Call_FakeConnectEx);
+
+		return tpiCallParameters.nRetValue;
+	}
 }
 
 namespace {
@@ -200,6 +250,18 @@ namespace {
 
 				bIsOK = HookControl::InlineHook(pfnWSAConnect, FakeWSAConnect, (void**)&pfnWSAConnect);
 				Global::Log.Print(LOGOutputs, _T("HookControl::InlineHook([WS2_32.dll,WSAConnect], FakeWSAConnect) is %s(%u)."), tszHitModuleFileName, bIsOK);
+			}
+
+			if (NULL == pfnConnectEx) {
+				WSADATA wsaData;
+				WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+				GUID wsaIDConnectEx = WSAID_CONNECTEX;
+				if (GetWSAExFunction(wsaIDConnectEx, (void **)&pfnConnectEx) && pfnConnectEx) {
+
+					bIsOK = HookControl::InlineHook(pfnConnectEx, FakeConnectEx, (void **)&pfnConnectEx);
+					Global::Log.Print(LOGOutputs, _T("HookControl::InlineHook([mswsock.dll,ConnectEx], Fakeconnect) is %s(%u)."), tszHitModuleFileName, bIsOK);
+				}
 			}
 
 			if (NULL == pfnconnect) {

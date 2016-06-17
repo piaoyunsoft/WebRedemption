@@ -5,6 +5,7 @@
 
 #include <CommonControl/Commonfun.h>
 
+BOOL GetWSAExFunction(GUID&funGuid, void** ppFunction);
 
 const char * __inet_ntop(int af, in_addr src_addr, char *dst, socklen_t cnt);
 const wchar_t * __inet_ntopw(int af, in_addr src_addr, wchar_t *dst, socklen_t cnt);
