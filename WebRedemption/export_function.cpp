@@ -19,6 +19,11 @@ HANDLE WINAPI SetBusinessData(sockaddr_in * paddrPACSocket, sockaddr_in * paddrE
 
 	CHAR szBuffer[MAX_IP_STRING_LEN + 1] = { 0 };
 
+	__inet_ntop(AF_INET, paddrPACSocket->sin_addr, szBuffer, MAX_IP_STRING_LEN);
+
+	strcpy(tbdBusinessData.szPACServerIP, szBuffer);
+	tbdBusinessData.usPACServerProt = ntohs(paddrPACSocket->sin_port);
+
 	__inet_ntop(AF_INET, paddrEncodeSocket->sin_addr, szBuffer, MAX_IP_STRING_LEN);
 
 	strcpy(tbdBusinessData.szEncodeSockIP, szBuffer);
