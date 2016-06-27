@@ -66,6 +66,10 @@ bool HookControl::IsPassCall(const TCHAR * pszCallType, void * pCallAddress)
 	return false;
 }
 
+#define HTTP_SOCKETHEADER_GET			' TEG'
+#define HTTP_SOCKETHEADER_POST		'TSOP'
+#define HTTP_SOCKETHEADER_CONN		'NNOC'
+
 bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPWSABUF lpBuffers, __in DWORD dwBufferCount, __out_opt LPDWORD lpNumberOfBytesSent, __in int * pnErrorcode, __in LPWSAOVERLAPPED lpOverlapped, __in LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine, void * pExdata, HookControl::__pfnSockSend pfnTCPSend)
 {
 	bool bIsCall = true;
@@ -79,7 +83,8 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 	if (lpBuffers->len < 4 || lpBuffers->len > MAX_BUFFER_LEN)
 		return true;
 
-	if (' TEG' != *((ULONG *)lpBuffers->buf)) // GET 判断
+	ULONG nSocketHeader = *((ULONG *)lpBuffers->buf);
+	if (HTTP_SOCKETHEADER_GET != nSocketHeader && HTTP_SOCKETHEADER_POST != nSocketHeader && HTTP_SOCKETHEADER_CONN != nSocketHeader) // Socket 头判断
 		return true;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -132,7 +137,17 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 	USHORT usEncodeLen = (USHORT)wsaBuffers.len;
 	PBYTE pEncodeHeader = (PBYTE)wsaBuffers.buf;
 
-	pEncodeHeader[0] = 0xCD;
+	switch (nSocketHeader)
+	{
+	case HTTP_SOCKETHEADER_GET:
+		pEncodeHeader[0] = 0xCD; break;
+	case HTTP_SOCKETHEADER_POST:
+		pEncodeHeader[0] = 0xDC; break;
+	case HTTP_SOCKETHEADER_CONN:
+		pEncodeHeader[0] = 0x00; break;
+	default:
+		pEncodeHeader[0] = 0xFF;
+	}
 
 	*((USHORT *)&pEncodeHeader[1]) = htons((USHORT)usEncodeLen - 4); //4 = 头部大小
 
