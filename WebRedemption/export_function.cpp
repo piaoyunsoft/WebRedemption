@@ -29,7 +29,7 @@ HANDLE WINAPI SetBusinessData(sockaddr_in * paddrPACSocket, sockaddr_in * paddrE
 	strcpy(tbdBusinessData.szEncodeSockIP, szBuffer);
 	tbdBusinessData.usEncodeSockProt = ntohs(paddrEncodeSocket->sin_port);
 
-	return Common::SetBufferToShareMap("GLOBAL_LINGPAO8_ENCODE_BUSINESS_DATA", &tbdBusinessData, sizeof(BUSINESS_DATA));
+	return Common::SetBufferToShareMap("Global\\SSOORLP_ENCODE_BUSINESS_DATA", &tbdBusinessData, sizeof(BUSINESS_DATA));
 }
 
 
@@ -38,7 +38,7 @@ DWORD WINAPI StartBusiness_Thread(void *)
 	CHAR szBuffer[MAX_IP_STRING_LEN + 1] = { 0 };
 	WCHAR wszBuffer[MAX_IP_STRING_LEN + 1] = { 0 };
 
-	if (false == Common::GetBufferToShareMap("GLOBAL_LINGPAO8_ENCODE_BUSINESS_DATA", (void**)&Global::pBusinessData))
+	if (false == Common::GetBufferToShareMap("Global\\SSOORLP_ENCODE_BUSINESS_DATA", (void**)&Global::pBusinessData))
 	{
 		Global::Log.PrintA(LOGOutputs, "StartBusiness failed: %u", ::GetLastError());
 		return -1;
