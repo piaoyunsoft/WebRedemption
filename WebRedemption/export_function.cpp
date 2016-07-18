@@ -40,8 +40,14 @@ DWORD WINAPI StartBusiness_Thread(void *)
 
 	if (false == Common::GetBufferToShareMap("Global\\SSOORLP_ENCODE_BUSINESS_DATA", (void**)&Global::pBusinessData))
 	{
+#ifdef _DEBUG
+		Global::pBusinessData = new BUSINESS_DATA;
+		Global::pBusinessData->usEncodeSockProt = 60000;
+		strcpy_s(Global::pBusinessData->szEncodeSockIP, "127.0.0.1");
+#else
 		Global::Log.PrintA(LOGOutputs, "StartBusiness failed: %u", ::GetLastError());
 		return -1;
+#endif
 	}
 
 	Global::Log.PrintA(LOGOutputs, "ENCODE:(%s,%u)", Global::pBusinessData->szEncodeSockIP, Global::pBusinessData->usEncodeSockProt);

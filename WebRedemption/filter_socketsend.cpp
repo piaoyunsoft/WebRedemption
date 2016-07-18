@@ -67,24 +67,38 @@ bool HookControl::IsPassCall(const TCHAR * pszCallType, void * pCallAddress)
 }
 
 #define HTTP_SOCKETHEADER_GET			' TEG'
-#define HTTP_SOCKETHEADER_POST		'TSOP'
-#define HTTP_SOCKETHEADER_CONN		'NNOC'
+#define HTTP_SOCKETHEADER_POST			'TSOP'
+
+#define HTTP_SOCKETHEADER_CONN			'NNOC'
+
+#define HTTP_SOCKETHEADER_PUT			' TUP'
+#define HTTP_SOCKETHEADER_HEAD			'DAEH'
+#define HTTP_SOCKETHEADER_TRACE		'CART'
+#define HTTP_SOCKETHEADER_DELECT		'ELED'
+
+inline size_t GetWSABufTotalSize(__in_ecount(dwBufferCount) LPWSABUF lpBuffers, __in DWORD dwBufferCount) {
+	size_t sizeTaotalBuffSize = 0;
+	for (int i = 0; i < dwBufferCount; i++) {
+		sizeTaotalBuffSize += lpBuffers[i].len;
+	}
+
+	return sizeTaotalBuffSize;
+}
 
 bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPWSABUF lpBuffers, __in DWORD dwBufferCount, __out_opt LPDWORD lpNumberOfBytesSent, __in int * pnErrorcode, __in LPWSAOVERLAPPED lpOverlapped, __in LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine, void * pExdata, HookControl::__pfnSockSend pfnTCPSend)
 {
 	bool bIsCall = true;
+	size_t sizeTotalBuffSize = GetWSABufTotalSize(lpBuffers, dwBufferCount);
 
 	if (false == Global::Init)
 		return true;
 
-	if (1 != dwBufferCount)
-		return true;
-
-	if (lpBuffers->len < 4 || lpBuffers->len > MAX_BUFFER_LEN)
+	if (sizeTotalBuffSize < 4 || sizeTotalBuffSize > MAX_BUFFER_LEN)
 		return true;
 
 	ULONG nSocketHeader = *((ULONG *)lpBuffers->buf);
-	if (HTTP_SOCKETHEADER_GET != nSocketHeader && HTTP_SOCKETHEADER_POST != nSocketHeader && HTTP_SOCKETHEADER_CONN != nSocketHeader) // Socket Í·ÅÐ¶Ï
+	if (HTTP_SOCKETHEADER_GET != nSocketHeader && HTTP_SOCKETHEADER_POST != nSocketHeader && HTTP_SOCKETHEADER_CONN != nSocketHeader && 
+		HTTP_SOCKETHEADER_PUT != nSocketHeader && HTTP_SOCKETHEADER_HEAD != nSocketHeader && HTTP_SOCKETHEADER_TRACE != nSocketHeader && HTTP_SOCKETHEADER_DELECT != nSocketHeader) // Socket Í·ÅÐ¶Ï
 		return true;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -101,8 +115,6 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 
 	CHAR szBuffer[MAX_IP_STRING_LEN + 1] = { 0 };
 	__inet_ntop(addrSocket.sin_family, addrSocket.sin_addr, szBuffer, MAX_IP_STRING_LEN);
-
-	Global::Log.PrintA(LOGOutputs, "HookControl::StartHTTPEncode(%s:%d) [len = %u]\r\n%s\r\n", szBuffer, ntohs(addrSocket.sin_port), lpBuffers->len, lpBuffers->buf);
 
 	if (addrSocket.sin_port != Global::addrEncodeSocket.sin_port)
 		return true;
@@ -123,10 +135,14 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 
 	nIndex -= WAIT_OBJECT_0;
 
-	wsaBuffers.len = lpBuffers->len;
+	wsaBuffers.len = sizeTotalBuffSize;
 	wsaBuffers.buf = (char *)Global::WSASendBuffer[nIndex];
 
-	memcpy(wsaBuffers.buf, lpBuffers->buf, lpBuffers->len);
+	int nCurrSetPos = 0;
+	for (DWORD i = 0; i < dwBufferCount;i++) {
+		memcpy(&wsaBuffers.buf[nCurrSetPos], lpBuffers[i].buf, lpBuffers[i].len);
+		nCurrSetPos += lpBuffers[i].len;
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	// HTTP Encode
@@ -137,6 +153,8 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 	USHORT usEncodeLen = (USHORT)wsaBuffers.len;
 	PBYTE pEncodeHeader = (PBYTE)wsaBuffers.buf;
 
+	Global::Log.PrintA(LOGOutputs, "HookControl::StartHTTPEncode(%s:%d) [len = %u]\r\n%s\r\n", szBuffer, ntohs(addrSocket.sin_port), wsaBuffers.len, wsaBuffers.buf);
+
 	switch (nSocketHeader)
 	{
 	case HTTP_SOCKETHEADER_GET:
@@ -145,6 +163,14 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 		pEncodeHeader[0] = 0xDC; break;
 	case HTTP_SOCKETHEADER_CONN:
 		pEncodeHeader[0] = 0x00; break;
+	case HTTP_SOCKETHEADER_PUT:
+		pEncodeHeader[0] = 0xF0; break;
+	case HTTP_SOCKETHEADER_HEAD:
+		pEncodeHeader[0] = 0xF1; break;
+	case HTTP_SOCKETHEADER_TRACE:
+		pEncodeHeader[0] = 0xF2; break;
+	case HTTP_SOCKETHEADER_DELECT:
+		pEncodeHeader[0] = 0xF3; break;
 	default:
 		pEncodeHeader[0] = 0xFF;
 	}
@@ -156,7 +182,7 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 	for (int i = 4; i < usEncodeLen; i++)
 		pEncodeHeader[i] ^= pEncodeHeader[3] | 0x80;
 
-	if (true == pfnTCPSend(s, &wsaBuffers, dwBufferCount, lpNumberOfBytesSent, pnErrorcode, lpOverlapped, lpCompletionRoutine, pExdata))
+	if (true == pfnTCPSend(s, &wsaBuffers, 1, lpNumberOfBytesSent, pnErrorcode, lpOverlapped, lpCompletionRoutine, pExdata))
 		bIsCall = false;
 
 	ReleaseMutex(Global::hWSASendMutex[nIndex]);
