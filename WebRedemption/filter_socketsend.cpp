@@ -155,14 +155,15 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 		Global::vTransparentSockets.push_back(s);
 	}
 
+	if (IsTransparentSocket(s)) {
+		return true;
+	}
+
 	int nIndex = 0;
 	nIndex = WaitForMultipleObjects(MAX_CONCURRENT, Global::hWSASendMutex, FALSE, INFINITE);
 
 	if (WAIT_FAILED == nIndex || WAIT_TIMEOUT == nIndex) {
 		Global::vTransparentSockets.push_back(s);
-	}
-
-	if (IsTransparentSocket(s)) {
 		return true;
 	}
 
