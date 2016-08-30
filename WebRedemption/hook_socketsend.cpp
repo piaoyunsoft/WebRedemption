@@ -251,8 +251,8 @@ namespace {
 					Global::Log.Print(LOGOutputs, _T("HookControl::IATHook(% 15s,[WS2_32.dll,send], Fakesend) is %s(%u)."), pszSocketHookLists[i], tszHitModuleFileName, bIsOK);
 				}
 
-				bIsOK = HookControl::InlineHook(pfnsend, Fakesend, (void**)&pfnsend);
-				Global::Log.Print(LOGOutputs, _T("HookControl::InlineHook([WS2_32.dll,send], Fakesend) is %s(%u)."), tszHitModuleFileName, bIsOK);
+				//bIsOK = HookControl::InlineHook(pfnsend, Fakesend, (void**)&pfnsend);
+				//Global::Log.Print(LOGOutputs, _T("HookControl::InlineHook([WS2_32.dll,send], Fakesend) is %s(%u)."), tszHitModuleFileName, bIsOK);
 			}
 		}
 
