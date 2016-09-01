@@ -59,7 +59,7 @@ DWORD WINAPI StartBusiness_Thread(void *)
 		Global::addrEncodeSocket.sin_addr.s_addr = inet_addr(Global::pBusinessData->szEncodeSockIP);
 
 		Filter::InitSocketSend();
-		Filter::InitSocketConnect();
+		//Filter::InitSocketConnect();
 
 		Hook::StartSocketSendHook();
 		Hook::StartSocketConnectHook();

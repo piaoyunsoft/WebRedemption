@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine">
+      <UniqueIdentifier>{ecf3608e-c022-40e5-ac8e-57c1431c0a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine">
+      <UniqueIdentifier>{cfe83200-90e7-4296-9e9e-5df981950c16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Base">
+      <UniqueIdentifier>{8ce9aebb-79dc-4a4c-bded-cc704305486b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Base">
+      <UniqueIdentifier>{a4734851-0cf8-4978-9b30-2e05311bc4a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\File">
+      <UniqueIdentifier>{75352f79-55ee-4d1e-b451-b3265be8842a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\Process">
+      <UniqueIdentifier>{89c1ef91-064b-4d6d-9af3-46c19a9323a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\System">
+      <UniqueIdentifier>{9132f136-9822-4c24-a811-a0727fc95667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\File">
+      <UniqueIdentifier>{de474530-be0e-4d45-8e15-9d69481f8984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\System">
+      <UniqueIdentifier>{d47b9e20-abd6-4994-a777-81b74f9b7cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\Process">
+      <UniqueIdentifier>{bbb3f9c4-3567-41bf-8126-716c60aeacf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\Window">
+      <UniqueIdentifier>{b28dd011-4cb1-419d-afba-4c896eb94b4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\Window">
+      <UniqueIdentifier>{0a29dcf3-fe13-4555-bde6-87c0b429071f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\Registry">
+      <UniqueIdentifier>{8a8b849a-f3f0-43e1-84ba-83fefac18f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\Registry">
+      <UniqueIdentifier>{a72a4925-d00e-4077-bd6a-5e5e7352ea22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\Window\LPC">
+      <UniqueIdentifier>{5d984085-675b-46d2-97d5-7c7f036f34f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\Window\LPC">
+      <UniqueIdentifier>{6142b22c-d84c-4ece-99c9-5e8122516b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\distorm3">
+      <UniqueIdentifier>{8044a75c-72b1-4805-a348-4c01bab5a94b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\distorm3">
+      <UniqueIdentifier>{b57dd2a6-3e05-4826-9610-6eb48994a47f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Dispatch Routine\Socket">
+      <UniqueIdentifier>{dab72e54-dd9b-4ab6-ae4f-6ac92ae17cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Dispatch Routine\Socket">
+      <UniqueIdentifier>{49c13153-9f82-43ae-9cd2-16cb76d94510}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="InlineHook.cpp">
+      <Filter>源文件\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="HookHelp.cpp">
+      <Filter>源文件\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeLdrLoadDll.cpp">
+      <Filter>源文件\Dispatch Routine\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtDeviceIoControlFile.cpp">
+      <Filter>源文件\Dispatch Routine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtCreateFile.cpp">
+      <Filter>源文件\Dispatch Routine\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeCreateFile.cpp">
+      <Filter>源文件\Dispatch Routine\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeCoGetClassObject.cpp">
+      <Filter>源文件\Dispatch Routine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Inject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeCreateWindowEx.cpp">
+      <Filter>源文件\Dispatch Routine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeShowWindow.cpp">
+      <Filter>源文件\Dispatch Routine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeCreateDirectory.cpp">
+      <Filter>源文件\Dispatch Routine\File</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtSetValueKey.cpp">
+      <Filter>源文件\Dispatch Routine\Registry</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeCreateProcessInternal.cpp">
+      <Filter>源文件\Dispatch Routine\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="FakePostMessage.cpp">
+      <Filter>源文件\Dispatch Routine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeGetPrivateProfileInt.cpp">
+      <Filter>源文件\Dispatch Routine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeShellExecute.cpp">
+      <Filter>源文件\Dispatch Routine\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtOpenProcess.cpp">
+      <Filter>源文件\Dispatch Routine\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeWritePrivateProfileString.cpp">
+      <Filter>源文件\Dispatch Routine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryModule.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RecoveryHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtCreatePort.cpp">
+      <Filter>源文件\Dispatch Routine\Window\LPC</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtReplyWaitReceivePortEx.cpp">
+      <Filter>源文件\Dispatch Routine\Window\LPC</Filter>
+    </ClCompile>
+    <ClCompile Include="IATModifier.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IATProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNtResumeThread.cpp">
+      <Filter>源文件\Dispatch Routine\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeGetPrivateProfileString.cpp">
+      <Filter>源文件\Dispatch Routine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeMoveWindow.cpp">
+      <Filter>源文件\Dispatch Routine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\decoder.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\distorm.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\instructions.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\insts.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\mnemonics.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\operands.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\prefix.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\textdefs.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="distorm3\wstring.c">
+      <Filter>源文件\distorm3</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeNdrStubCall2.cpp">
+      <Filter>源文件\Dispatch Routine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeSocket.cpp">
+      <Filter>源文件\Dispatch Routine\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="FakeWSASend.cpp">
+      <Filter>源文件\Dispatch Routine\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="IATHook.cpp">
+      <Filter>源文件\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Fakesend.cpp">
+      <Filter>源文件\Dispatch Routine\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="Fakeconnect.cpp">
+      <Filter>源文件\Dispatch Routine\Socket</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="InlineHook.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="LDasm.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="HookHelp.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtCreateFile.h">
+      <Filter>头文件\Dispatch Routine\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeLdrLoadDll.h">
+      <Filter>头文件\Dispatch Routine\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtDeviceIoControlFile.h">
+      <Filter>头文件\Dispatch Routine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeCreateFile.h">
+      <Filter>头文件\Dispatch Routine\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeCoGetClassObject.h">
+      <Filter>头文件\Dispatch Routine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Inject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeCreateWindowEx.h">
+      <Filter>头文件\Dispatch Routine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeShowWindow.h">
+      <Filter>头文件\Dispatch Routine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeCreateDirectory.h">
+      <Filter>头文件\Dispatch Routine\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtSetValueKey.h">
+      <Filter>头文件\Dispatch Routine\Registry</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeCreateProcessInternal.h">
+      <Filter>头文件\Dispatch Routine\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="FakePostMessage.h">
+      <Filter>头文件\Dispatch Routine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeShellExecute.h">
+      <Filter>头文件\Dispatch Routine\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtOpenProcess.h">
+      <Filter>头文件\Dispatch Routine\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeGetPrivateProfileInt.h">
+      <Filter>头文件\Dispatch Routine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeWritePrivateProfileString.h">
+      <Filter>头文件\Dispatch Routine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RecoveryHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtCreatePort.h">
+      <Filter>头文件\Dispatch Routine\Window\LPC</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtReplyWaitReceivePortEx.h">
+      <Filter>头文件\Dispatch Routine\Window\LPC</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNdrStubCall2.h">
+      <Filter>头文件\Dispatch Routine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="IATModifier.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IATProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeNtResumeThread.h">
+      <Filter>头文件\Dispatch Routine\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeGetPrivateProfileString.h">
+      <Filter>头文件\Dispatch Routine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeMoveWindow.h">
+      <Filter>头文件\Dispatch Routine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\x86defs.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\wstring.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\textdefs.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\prefix.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\operands.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\insts.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\instructions.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\decoder.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\config.h">
+      <Filter>头文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\include\distorm.h">
+      <Filter>源文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="distorm3\include\mnemonics.h">
+      <Filter>源文件\distorm3</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeSocket.h">
+      <Filter>头文件\Dispatch Routine\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeWSASend.h">
+      <Filter>头文件\Dispatch Routine\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="IATHook.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Fakesend.h">
+      <Filter>头文件\Dispatch Routine\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="Fakeconnect.h">
+      <Filter>头文件\Dispatch Routine\Socket</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -66,11 +66,21 @@ bool HookControl::IsPassCall(const TCHAR * pszCallType, void * pCallAddress)
 		return true;
 	}
 
-#ifdef _DEBUG
+
 	TCHAR szCallModuleName[MAX_PATH + 1] = { 0 };
 	::GetModuleFileName(Common::GetModuleHandleByAddr(pCallAddress), szCallModuleName, MAX_PATH);
+#ifdef _DEBUG
 	Global::Log.Print(LOGOutputs, _T("HookControl::%s call module is: %s"), pszCallType, szCallModuleName);
 #endif
+
+	PathStripPath(szCallModuleName);
+	if (NULL != StrStrI(_T("impshae.dll"), szCallModuleName))  // 360net.dll/
+	{
+#ifdef _DEBUG		
+		Global::Log.Print(LOGOutputs, _T("HookControl::%s module=%s, return true"), pszCallType, szCallModuleName);
+#endif
+		return true;
+	}
 
 	return false;
 }
@@ -105,14 +115,23 @@ inline bool IsTransparentSocket(__in SOCKET s) {
 	return false;
 }
 
-inline byte SendEncodeHeader(__in SOCKET s, PBYTE pEncodeHeader , USHORT usTotalEncodeSize) {
+inline byte SendEncodeHeader(__in SOCKET s, PBYTE pEncodeHeader , USHORT usTotalEncodeSize, void * pExdata, HookControl::__pfnSockSend pfnTCPSend) {
 	pEncodeHeader[0] = 0xFF;
 
 	*((USHORT *)&pEncodeHeader[1]) = htons((USHORT)usTotalEncodeSize); //4 = 头部大小
 
 	pEncodeHeader[3] = pEncodeHeader[0] ^ (pEncodeHeader[1] + pEncodeHeader[2]);
 
-	send(s, (char *)pEncodeHeader, MAX_HEADER_SIZE, 0);
+	WSABUF wsaBuffers = { 0 };
+	wsaBuffers.len = MAX_HEADER_SIZE;
+	wsaBuffers.buf = (CHAR *)pEncodeHeader;
+	
+	DWORD dwNumberOfBytesSent;
+	int nErrorcode;
+	pfnTCPSend(s, &wsaBuffers, 1, &dwNumberOfBytesSent, &nErrorcode, NULL, NULL, pExdata); // send(s, (char *)pEncodeHeader, MAX_HEADER_SIZE, 0);
+#ifdef _DEBUG
+	Global::Log.PrintA(LOGOutputs, "SendEncodeHeader(%d) BytesSent=%d, error=%d(LastError=%d) \r\n", s, dwNumberOfBytesSent, nErrorcode, GetLastError());
+#endif
 
 	return pEncodeHeader[3];
 }
@@ -172,7 +191,10 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 
 	WSABUF wsaBuffers = { 0 };
 
-	nIndex -= WAIT_OBJECT_0;
+	if (nIndex < WAIT_ABANDONED_0)
+		nIndex -= WAIT_OBJECT_0;
+	else
+		nIndex -= WAIT_ABANDONED_0;
 
 	wsaBuffers.len = sizeTotalBuffSize;
 	wsaBuffers.buf = &Global::WSASendBuffer[nIndex][MAX_HEADER_SIZE];
@@ -183,7 +205,7 @@ bool HookControl::OnBeforeSockSend(__in SOCKET s, __in_ecount(dwBufferCount) LPW
 		nCurrSetPos += lpBuffers[i].len;
 	}
 
-	byte byteEncodeCode = SendEncodeHeader(s, (PBYTE)Global::WSASendBuffer[nIndex], sizeTotalBuffSize);
+	byte byteEncodeCode = SendEncodeHeader(s, (PBYTE)Global::WSASendBuffer[nIndex], sizeTotalBuffSize, pExdata, pfnTCPSend);
 
 	//////////////////////////////////////////////////////////////////////////
 	// HTTP Encode

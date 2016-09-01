@@ -22,7 +22,7 @@ namespace Global {
 	extern sockaddr_in addrEncodeSocket;
 	extern PBUSINESS_DATA pBusinessData;
 }
-
+// 浏览器负责网络IO的模块
 static const TCHAR * pszSocketHookLists[] = {
 	_T("wininet.dll"),												// webbrowser控件
 	_T("chrome.dll") ,												// chrome/360安全/360极速/uc/2345/猎豹/qq 浏览器

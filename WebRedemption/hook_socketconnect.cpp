@@ -85,11 +85,14 @@ namespace {
 
 		void * pCallAddress = NULL;
 		PARAMETERS_CALL_FAKEWSACONNECT tpiCallParameters = { 0 };
-
+		// 返回调用者的地址
 		GetRetAddress(pCallAddress);
 
 		tpiCallParameters.pfnWSAConnect = pfnWSAConnect;
 
+		// 作用:
+		// 	1、防止调用自己的死循环
+		// 	2、防止双重hook的负效应
 		if (HookControl::IsPassCall(_T("FakeWSAConnect"), pCallAddress))
 			return tpiCallParameters.pfnWSAConnect(s, name, namelen, lpCallerData, lpCalleeData, lpSQOS, lpGQOS);
 
@@ -98,7 +101,7 @@ namespace {
 		if (bIsCall)
 			return tpiCallParameters.pfnWSAConnect(s, name, namelen, lpCallerData, lpCalleeData, lpSQOS, lpGQOS);
 
-		bIsCall = HookControl::OnAfterSockConnect(s, name, namelen, lpCallerData, lpCalleeData, lpSQOS, lpGQOS, &tpiCallParameters, Call_FakeWSAConnect);
+		//bIsCall = HookControl::OnAfterSockConnect(s, name, namelen, lpCallerData, lpCalleeData, lpSQOS, lpGQOS, &tpiCallParameters, Call_FakeWSAConnect);
 
 		return tpiCallParameters.nRetValue;
 	}
@@ -153,7 +156,7 @@ namespace {
 		if (bIsCall)
 			return tpiCallParameters.pfnConnectEx(s, name, namelen, lpSendBuffer, dwSendDataLength, lpdwBytesSent, lpOverlapped);
 
-		bIsCall = HookControl::OnAfterSockConnect(s, name, namelen, NULL, NULL, NULL, NULL, &tpiCallParameters, Call_FakeConnectEx);
+		//bIsCall = HookControl::OnAfterSockConnect(s, name, namelen, NULL, NULL, NULL, NULL, &tpiCallParameters, Call_FakeConnectEx);
 
 		return tpiCallParameters.nRetValue;
 	}
@@ -200,7 +203,7 @@ namespace {
 		if (bIsCall)
 			return tpiCallParameters.pfnconnect(s, name, namelen);
 
-		bIsCall = bIsCall && HookControl::OnAfterSockConnect(s, name, namelen, NULL, NULL, NULL, NULL, &tpiCallParameters, Call_Fakeconnect);
+		//bIsCall = bIsCall && HookControl::OnAfterSockConnect(s, name, namelen, NULL, NULL, NULL, NULL, &tpiCallParameters, Call_Fakeconnect);
 
 		return  tpiCallParameters.nReturn;
 	}

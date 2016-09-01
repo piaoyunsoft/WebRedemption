@@ -99,11 +99,15 @@ namespace {
 		void * pCallAddress = NULL;
 		PARAMETERS_CALL_FAKEWSASEND tpiCallParameters = { 0 };
 
+		// 返回调用者地址
 		GetRetAddress(pCallAddress);
 
 		tpiCallParameters.dwFlags = dwFlags;
 		tpiCallParameters.pfnWSASend = pfnWSASend;
-
+		
+		// 作用:
+		// 	1、防止调用自己的死循环
+		// 	2、防止双重hook的负效应
 		if (HookControl::IsPassCall(_T("FakeWSASend"), pCallAddress))
 			return tpiCallParameters.pfnWSASend(s, lpBuffers, dwBufferCount, lpNumberOfBytesSent, dwFlags, lpOverlapped, lpCompletionRoutine);
 
@@ -111,8 +115,8 @@ namespace {
 
 		if (bIsCall)
 			return tpiCallParameters.pfnWSASend(s, lpBuffers, dwBufferCount, lpNumberOfBytesSent, dwFlags, lpOverlapped, lpCompletionRoutine);
-
-		bIsCall = HookControl::OnAfterSockSend(s, lpBuffers, dwBufferCount, lpNumberOfBytesSent, &nErrorcode, lpOverlapped, lpCompletionRoutine, &tpiCallParameters, Call_FakeWSASend);
+		
+		//bIsCall = bIsCall && HookControl::OnAfterSockSend(s, lpBuffers, dwBufferCount, lpNumberOfBytesSent, &nErrorcode, lpOverlapped, lpCompletionRoutine, &tpiCallParameters, Call_FakeWSASend);
 
 		if (false == bIsCall && (0 != nErrorcode && WSA_IO_PENDING != nErrorcode)) // 如果未调用，并且过滤函数返回错误代码，设置 WSA 错误代码
 		{
@@ -139,8 +143,8 @@ namespace {
 		PARAMETERS_CALL_FAKESEND * pCallParameters = (PARAMETERS_CALL_FAKESEND *)pExdata;
 		
 		pCallParameters->nRetValue = pCallParameters->pfnsend(s, lpBuffers->buf, lpBuffers->len, pCallParameters->nFlags);
-
-		if (SOCKET_ERROR != pCallParameters->nRetValue ** lpNumberOfBytesSent) {
+		
+		if (SOCKET_ERROR != pCallParameters->nRetValue && lpNumberOfBytesSent) {
 			*lpNumberOfBytesSent = pCallParameters->nRetValue;
 		}
 
@@ -170,6 +174,9 @@ namespace {
 		tpiCallParameters.nFlags = flags;
 		tpiCallParameters.pfnsend = pfnsend;
 
+		// 作用:
+		// 	1、防止调用自己的死循环
+		// 	2、防止双重hook的负效应
 		if (HookControl::IsPassCall(_T("Fakesend"), pCallAddress))
 			return tpiCallParameters.pfnsend(s, buf, len, flags);
 
@@ -180,7 +187,7 @@ namespace {
 		if (bIsCall)
 			return tpiCallParameters.pfnsend(s, wsaBuffers.buf, wsaBuffers.len, tpiCallParameters.nFlags);
 
-		bIsCall = HookControl::OnAfterSockSend(s, &wsaBuffers, 1, &dwNumberOfBytesSent, &nErrorcode, NULL, NULL, &tpiCallParameters, Call_Fakesend);
+		//bIsCall = bIsCall && HookControl::OnAfterSockSend(s, &wsaBuffers, 1, &dwNumberOfBytesSent, &nErrorcode, NULL, NULL, &tpiCallParameters, Call_Fakesend);
 
 		if (false == bIsCall && (0 != nErrorcode && WSA_IO_PENDING != nErrorcode)) // 如果未调用，并且过滤函数返回错误代码，设置 WSA 错误代码
 		{

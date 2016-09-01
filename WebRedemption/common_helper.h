@@ -14,7 +14,7 @@ inline bool FindModule(_In_opt_ LPCTSTR lpModuleName, _Out_ HMODULE * phModule)
 {
 	return TRUE == GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, lpModuleName, phModule);
 }
-
+// 保证 lpModuleName 所指模块不会被卸载
 inline bool LockModule(_In_opt_ LPCTSTR lpModuleName, _Out_ HMODULE * phModule)
 {
 	return TRUE == GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN, lpModuleName, phModule);
@@ -40,6 +40,7 @@ inline PRTL_USER_PROCESS_PARAMETERS GetCurrentProcessParameters() {
 }
 
 namespace Lists {
+	// 识别浏览器的特征模块
 	static const TCHAR * pszModuleNameHitLists[] = {
 		_T("chrome.dll") , /* chrome/360安全/360极速/uc/2345/猎豹/qq 浏览器*/
 		_T("mxwebkit.dll") ,_T("xul.dll" ),  /* 遨游云 浏览器*/
@@ -92,7 +93,7 @@ namespace Lists {
 
 		return NULL;
 	}
-
+	// 浏览器路径特征
 	static const wchar_t * pszProcessPathHitLists[] = {
 		L"\\application\\"/* F1 核心浏览器*/,
 		L"浏览器\\"/* F1 核心浏览器*/,
